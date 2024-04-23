@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.9
 
 WORKDIR /opt/app
 
@@ -22,6 +22,6 @@ RUN  mkdir -p /var/www/static/ \
 
 COPY . .
 
-EXPOSE 8000
+RUN chmod +x run_uwsgi.sh
 
-ENTRYPOINT ["uwsgi", "--strict", "--ini", "uwsgi.ini"]
+ENTRYPOINT ["./run_uwsgi.sh"]
