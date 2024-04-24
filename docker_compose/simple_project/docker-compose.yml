@@ -6,8 +6,7 @@ networks:
 
 services:
   database:
-    build: database
-    # image: postgres:13
+    image: postgres:13
     container_name: postgres_db
     environment:
       - POSTGRES_USER=${DB_USER}
@@ -46,7 +45,7 @@ services:
     depends_on:
       - service
     ports:
-      - 8080:8080
+      - 80:80
 
 volumes:
   postgres_data:
