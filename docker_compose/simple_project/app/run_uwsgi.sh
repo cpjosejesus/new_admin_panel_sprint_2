@@ -4,6 +4,8 @@ python3 manage.py migrate --noinput --fake
 python3 manage.py createsuperuser --no-input || true
 python3 manage.py collectstatic --noinput
 
+python manage.py compilemessages -l en -l ru
+
 set -e
 
 chown www-data:www-data /var/log

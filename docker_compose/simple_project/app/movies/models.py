@@ -1,5 +1,3 @@
-"""ORM models for film work application."""
-
 import uuid
 
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -165,6 +163,12 @@ class PersonFilmWork(UUIDMixin):
                 fields=['person'],
                 name='person_film_work_person_id'
             ),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["film_work", "person", "role"],
+                name="unique_film_work_person",
+            )
         ]
 
     def __str__(self) -> str:
