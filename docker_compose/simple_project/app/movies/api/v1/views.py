@@ -20,7 +20,17 @@ class MoviesApiMixin:
     http_method_names = ['get']
 
     def get_queryset(self) -> QuerySet[FilmWork]:
-        return self.model.objects.all()
+        genre_list = ArrayAgg('genres__name', distinct=True)
+        actors = self.get_person_aggregation(PersonRole.ACTOR)
+        directors = self.get_person_aggregation(PersonRole.DIRECTOR)
+        writers = self.get_person_aggregation(PersonRole.WRITER)
+
+        return self.model.objects.annotate(
+            genre_list=genre_list,
+            actors=actors,
+            directors=directors,
+            writers=writers
+        )
 
     def render_to_response(self, context, **response_kwargs):
         return JsonResponse(context)
@@ -35,16 +45,7 @@ class MoviesApiMixin:
 
     @staticmethod
     def model_to_dict(fw_queryset: QuerySet) -> dict:
-        genre_list = ArrayAgg('genres__name', distinct=True)
-        actors = MoviesApiMixin.get_person_aggregation(PersonRole.ACTOR)
-        directors = MoviesApiMixin.get_person_aggregation(PersonRole.DIRECTOR)
-        writers = MoviesApiMixin.get_person_aggregation(PersonRole.WRITER)
-
-        queryset = fw_queryset.annotate(genre_list=genre_list).annotate(
-            actors=actors).annotate(directors=directors).annotate(
-            writers=writers)
-
-        tmp = list(queryset.values().all())
+        tmp = list(fw_queryset.values().all())
         context = list()
         for entry in tmp:
             res = {
